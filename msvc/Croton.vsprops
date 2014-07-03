@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioPropertySheet
+	ProjectType="Visual C++"
+	Version="8.00"
+	Name="gtest"
+	>
+	<Tool
+		Name="VCCLCompilerTool"
+		AdditionalIncludeDirectories="$(MY_INC_ROOT)"
+		WarnAsError="false"
+		DisableSpecificWarnings="4396"
+	/>
+	<Tool
+		Name="VCLinkerTool"
+		AdditionalLibraryDirectories="$(MY_LIB_ROOT)"
+	/>
+	
+	<UserMacro Name="MY_PRJ_ROOT" Value="$(SolutionDir)"   />
+	<UserMacro Name="MY_REL_ROOT" Value="$(MY_PRJ_ROOT)$(ConfigurationName)\" />
+	<UserMacro Name="MY_INC_ROOT" Value="$(MY_REL_ROOT)include\" />
+	<UserMacro Name="MY_LIB_ROOT" Value="$(MY_REL_ROOT)lib\"     />
+	<UserMacro Name="MY_BIN_ROOT" Value="$(MY_REL_ROOT)bin\"     />
+	<UserMacro Name="MY_OBJ_ROOT" Value="$(MY_REL_ROOT)obj-deps\"	 />
+	<UserMacro Name="INSTALL_CMD" Value="$(SolutionDir)$(SolutionName).bat" />
+</VisualStudioPropertySheet>
