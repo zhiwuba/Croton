@@ -16,7 +16,7 @@ std::string url_encode(std::string source_url)
 		else
 		{
 			int j=(int)c;
-			if ( i<0 )
+			if ( j<0 )
 			{
 				j+=256;
 			}
@@ -40,7 +40,9 @@ std::string url_decode(std::string source_url)
 		}
 		else
 		{
-			int num=char_to_dec( (source_url[++i])<<4) +char_to_dec(source_url[++i]);
+			int first=(char_to_dec(source_url[++i])<<4);
+			int second=char_to_dec(source_url[++i]);
+			int num=first+second;
 			result+=(char)num;
 		}
 	}
@@ -101,7 +103,7 @@ unsigned int url_hash_code(UrlPtr url)
 		ret=h%kUrlHashSize;
 	}
 	return ret;
-}	
+}
 
 
 

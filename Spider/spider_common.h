@@ -15,7 +15,7 @@
 static const  int   kDomainTableSize=100*1024;   //100K
 static const  int   kDomainHashSize=20000;        //2W个域名
 static const  int   kUrlTableSize=100*1024; 
-static const  int   kUrlHashSize=64000000;
+static const  int   kUrlHashSize=64000000; 
 
 static const  int	kThreadPoolSize=20;   //开启20个线程池
 static const  int   kProcessCountPer=20;  //每次处理
