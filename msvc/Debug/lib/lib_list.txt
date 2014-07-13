@@ -1,0 +1,6 @@
+cryptlib.lib
+cryptopp.dll
+cryptopp.lib
+
+lib_json.lib
+libmysql.dll

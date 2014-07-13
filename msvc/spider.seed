@@ -1,0 +1,22 @@
+[general]
+website: forgifs
+url:http://forgifs.com/gallery/main.php
+index:http://forgifs.com/gallery/main.php\?g2_page=\d{1,3} http://forgifs.com/gallery/v/(.)+.gif.html
+pic:http://forgifs.com/gallery/d/(.)+/(.)+.gif
+pic_size:300-20240
+
+
+website:gifbin
+url:http://www.gifbin.com/
+index:http://www.gifbin.com/\d+
+pic:http://gifs.gifbin.com/(*)+.gif
+pic_size:300-20240
+
+
+website:gifak
+url:http://www.gifak.net/
+index:http://www.gifak.net/\d{4}/\d{2}/(.)+.html
+pic:http://(*)+/(*)+/(*)+.gif
+pic_size:300-20240
+
+
