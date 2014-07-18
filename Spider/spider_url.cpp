@@ -82,6 +82,15 @@ UrlPtr create_url(std::string url, URLTYPE  type)
 	return object;
 }
 
+
+#if NEW_METHOD
+unsigned int url_hash_code(UrlPtr url)
+{
+	
+	
+}
+
+#else
 unsigned int url_hash_code(UrlPtr url)
 {
 	unsigned int ret=0;
@@ -104,7 +113,6 @@ unsigned int url_hash_code(UrlPtr url)
 	}
 	return ret;
 }
-
-
+#endif
 
 

@@ -489,7 +489,7 @@ int  Spider_Http_Client::send_request(UrlPtr url)
 		Cookie* cookie=Spider_Cookie::instance().get_cookie("renren");
 		if ( cookie!=NULL )
 		{
-			request_package.set_field("Cookie",cookie->ToString() );
+			request_package.set_field("Cookie",cookie->to_string() );
 		}
 	}
 	else if(strstr(url->domain,"weibo")!=NULL )
@@ -497,7 +497,7 @@ int  Spider_Http_Client::send_request(UrlPtr url)
 		Cookie* cookie=Spider_Cookie::instance().get_cookie("weibo");
 		if ( cookie!=NULL )
 		{
-			request_package.set_field("Cookie",cookie->ToString() );
+			request_package.set_field("Cookie",cookie->to_string() );
 		}
 	}
 

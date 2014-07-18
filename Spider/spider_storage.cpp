@@ -48,7 +48,13 @@ int Spider_Storage::write_file(const char* website, const char* albums, UrlPtr u
 		}
 		if ( ret )
 		{
-			file_path /=url_ptr->filename;
+			char fileext[10]={0};
+			char filemd5[33]={0};
+			Spider_MD5::get_file_md5(url_ptr->response, url_ptr->length, filemd5);
+			get_file_ext(url_ptr->filename,fileext);
+			char new_file_name[100];
+			sprintf(new_file_name, "%s%s", filemd5, fileext);
+			file_path /=new_file_name;
 			FILE* file=fopen(file_path.string().c_str(),"wb");
 			if ( file!=NULL )
 			{
@@ -56,7 +62,7 @@ int Spider_Storage::write_file(const char* website, const char* albums, UrlPtr u
 				fclose(file);
 			}
 			m_database->insert_record(website, albums, url_ptr);
-		}		
+		}
 	}
 	return 0;
 }
@@ -77,6 +83,7 @@ int Spider_Storage::write_file(const char* website, UrlPtr url_ptr )
 			}
 			if ( ret )
 			{
+				Spider_MD5::get_buffer_md5_code(url_ptr->response, url_ptr->length);
 				file_path/=url_ptr->filename;
 				FILE* file=fopen(file_path.string().c_str(),"wb");
 				if ( file!=NULL )
@@ -85,7 +92,7 @@ int Spider_Storage::write_file(const char* website, UrlPtr url_ptr )
 					fclose(file);
 				}
 				m_database->insert_record(website,NULL, url_ptr);
-			}	
+			}
 		}
 	}
 	return 0;

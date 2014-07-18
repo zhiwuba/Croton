@@ -478,6 +478,16 @@ int prase_url(const std::string & url, std::string & host, std::string & uri ,in
 	return 0;
 }
 
+int get_file_ext( const char* filename, char* ext )
+{
+	if( filename!=NULL&& ext!=NULL)
+	{
+		const char* p=filename+strlen(filename);
+		while (*p!='.')p--;
+		strcpy(ext, p);
+	}
+	return 0;
+}
 
 std::string base64_encrypt(const char* data,int data_length)
 {
@@ -512,5 +522,6 @@ std::string RSA_encrypt(const char* data ,  const char* n, const char* e )
 
 	return result;
 }
+
 
 

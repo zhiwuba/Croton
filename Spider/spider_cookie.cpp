@@ -33,7 +33,7 @@ std::string& Cookie::operator()(std::string key)
 	return iter->second;
 }
 
-void  Cookie::SetCookie(std::string cookie)
+void  Cookie::set_cookie(std::string cookie)
 {
 	if ( !cookie.empty() )
 	{
@@ -55,7 +55,7 @@ void  Cookie::SetCookie(std::string cookie)
 	}
 }
 
-std::string Cookie::ToString()
+std::string Cookie::to_string()
 {
 	std::string cookie_value;
 	bool first=true;
@@ -79,13 +79,13 @@ std::string Cookie::ToString()
 	return cookie_value;
 }
 
-Cookie* Cookie::FromString(std::string content)
+Cookie* Cookie::from_string(std::string content)
 {
 	Cookie* cookie=NULL;
 	if ( content.length()>0 )
 	{
 		cookie=new Cookie();
-		cookie->SetCookie(content);
+		cookie->set_cookie(content);
 	}
 	return cookie;
 }
@@ -183,7 +183,7 @@ int Spider_Cookie::load_cookie()
 			{
 				std::string key=key_value[i];
 				std::string value=key_value[i+1];
-				Cookie* cookie=Cookie::FromString(value);
+				Cookie* cookie=Cookie::from_string(value);
 				m_cookie_database[key]=cookie;
 			}
 		}
@@ -253,7 +253,7 @@ int Spider_Cookie::renren_getencryptkey(Json::Value& encrypt_key, Cookie* cookie
 		return -1;
 	}
 
-	cookie->SetCookie(response_package.get_field("Cookie"));
+	cookie->set_cookie(response_package.get_field("Cookie"));
 
 	char* temp;
 	ret=response_package.get_body(temp);
@@ -276,7 +276,7 @@ int Spider_Cookie::renren_showcaptcha( std::string email ,Cookie* cookie)
 	request_package.set_field("Accept","*/*");
 	request_package.set_field("User-Agent","Mozilla/5.0");
 	request_package.set_field("Host", "www.renren.com");
-	request_package.set_field("Cookie", cookie->ToString());
+	request_package.set_field("Cookie", cookie->to_string());
 	request_package.set_field("Content-Length", data.length() );
 	request_package.set_body(data);
 	int ret=surface_page("www.renren.com", request_package, response_package);
@@ -286,7 +286,7 @@ int Spider_Cookie::renren_showcaptcha( std::string email ,Cookie* cookie)
 		return -1;
 	}
 	
-	cookie->SetCookie(response_package.get_field("Cookie"));
+	cookie->set_cookie(response_package.get_field("Cookie"));
 
 	char* temp=NULL;
 	ret=response_package.get_body(temp);
@@ -304,7 +304,7 @@ int Spider_Cookie::renren_getcaptcha(std::string& code, Cookie* cookie)
 	request_package.set_field("User-Agent","Mozilla/5.0");
 	request_package.set_field("Host", "icode.renren.com");
 	request_package.set_field("Connection","Keep-Alive");
-	request_package.set_field("Cookie", cookie->ToString());
+	request_package.set_field("Cookie", cookie->to_string());
 	int ret=surface_page("icode.renren.com", request_package, response_package);
 	if (  ret!=200&&ret!=302 )
 	{
@@ -341,14 +341,14 @@ std::string Spider_Cookie::renren_gettoken( std::string url, Cookie* cookie)
 		request_package.set_field("Accept","*/*");
 		request_package.set_field("User-Agent","Mozilla/5.0");
 		request_package.set_field("Host", host);
-		request_package.set_field("Cookie",cookie->ToString());
+		request_package.set_field("Cookie",cookie->to_string());
 		ret=surface_page(host, request_package, response_package);
 		if (  ret!=200&&ret!=302 )
 		{
 			LLOG(L_ERROR, "getEncryptKey::surface_page  error.");
 			return "";
 		}
-		cookie->SetCookie(response_package.get_field("Set-Cookie"));
+		cookie->set_cookie(response_package.get_field("Set-Cookie"));
 		if ( ret==302 )
 		{
 			char*  temp;
@@ -452,7 +452,7 @@ int Spider_Cookie::renren_ajaxlogin(const char* email, const char* password ,con
 	request_package.set_field("Host", "www.renren.com");
 	request_package.set_field("Content-Length", strlen(post_data));
 	request_package.set_field("Content-Type", "application/x-www-form-urlencoded");
-	request_package.set_field("Cookie", cookie->ToString());
+	request_package.set_field("Cookie", cookie->to_string());
 	request_package.set_body(std::string(post_data));
 
 	int ret=surface_page("www.renren.com", request_package, response_package);
@@ -461,7 +461,7 @@ int Spider_Cookie::renren_ajaxlogin(const char* email, const char* password ,con
 		LLOG(L_ERROR, "surface_page ajaxLogin error.");
 		return -1;
 	}
-	cookie->SetCookie(response_package.get_field("Set-Cookie"));
+	cookie->set_cookie(response_package.get_field("Set-Cookie"));
 	
 	char* rsp_body=NULL;
 	response_package.get_body(rsp_body);
@@ -579,7 +579,7 @@ int Spider_Cookie::sina_preloginstatus(std::string en_account, std::string& serv
 		return -1;
 	}
 
-	cookie->SetCookie(response_package.get_field("Set-Cookie"));
+	cookie->set_cookie(response_package.get_field("Set-Cookie"));
 	
 	char* rsp_body=NULL;
 	int length=response_package.get_body(rsp_body);
@@ -630,7 +630,7 @@ int Spider_Cookie::sina_dologin(std::string& en_acount ,std::string& en_password
 	request_package.set_field("Host",  "login.sina.com.cn");
 	request_package.set_field("Content-Length",strlen(post_data));
 	request_package.set_field("Content-Type","application/x-www-form-urlencoded");
-	request_package.set_field("Cookie", cookie->ToString());
+	request_package.set_field("Cookie", cookie->to_string());
 	request_package.set_body(std::string(post_data));
 	int ret=surface_page("login.sina.com.cn", request_package, response_package);
 	if ( ret!=200&&ret!=302 )
@@ -640,7 +640,7 @@ int Spider_Cookie::sina_dologin(std::string& en_acount ,std::string& en_password
 	}
 	else
 	{
-		cookie->SetCookie(response_package.get_field("Set-Cookie"));
+		cookie->set_cookie(response_package.get_field("Set-Cookie"));
 	}
 
 	char* body=NULL;
@@ -675,14 +675,14 @@ int Spider_Cookie::weibo_ajaxlogin(std::string url, Cookie* cookie)
 		request_package.set_field("Accept","*/*");
 		request_package.set_field("User-Agent","Mozilla/5.0");
 		request_package.set_field("Host", host);
-		request_package.set_field("Cookie",cookie->ToString());
+		request_package.set_field("Cookie",cookie->to_string());
 		ret=surface_page(host,request_package, response_package);
 		if ( ret!=200&&ret!=302 )
 		{
 			LLOG(L_ERROR, "Weibo_AjaxLogin %s surface_page error.", url.c_str());
 			return -1;
 		}
-		cookie->SetCookie(response_package.get_field("Set-Cookie"));
+		cookie->set_cookie(response_package.get_field("Set-Cookie"));
 		url=response_package.get_field("Location");
 	} while (ret==302);
 	
@@ -734,7 +734,7 @@ int Spider_Cookie::weibo_codes(Cookie* cookie, std::string& verification)
 	request_package.set_field("Accept","*/*");
 	request_package.set_field("User-Agent","Mozilla/5.0");
 	request_package.set_field("Host",  "login.sina.com.cn");
-	request_package.set_field("Cookie",cookie->ToString() );
+	request_package.set_field("Cookie",cookie->to_string() );
 	int ret=surface_page("login.sina.com.cn", request_package, response_package);
 	if ( ret!=200&&ret!=302 )
 	{
@@ -743,7 +743,7 @@ int Spider_Cookie::weibo_codes(Cookie* cookie, std::string& verification)
 	}
 	else
 	{
-		cookie->SetCookie(response_package.get_field("Set-Cookie"));
+		cookie->set_cookie(response_package.get_field("Set-Cookie"));
 	}
 	
 	char* body=NULL;

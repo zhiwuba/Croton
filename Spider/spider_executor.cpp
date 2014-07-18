@@ -53,8 +53,6 @@ int Spider_Executor::put_urls(UrlPtrVec& url_ptrs)
 	return 0;
 }
 
-
-
 int Spider_Executor::main_thread_aid()
 {
 #ifdef WIN32

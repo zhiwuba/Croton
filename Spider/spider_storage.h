@@ -20,7 +20,7 @@ public:
 	
 private:
 	Spider_Storage();
-	Spider_Database* m_database;	
+	Spider_Database* m_database;
 };
 
 

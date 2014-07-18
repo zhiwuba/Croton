@@ -85,7 +85,7 @@ int main()
 		if ( seed!=NULL )
 		{
 			Spider_WebSite* website=Spider_WebSite_Factory::create_website(site_name);
-			website->initialize(site_name.c_str(), seed->url_, seed->index_, seed->pic_,seed->pic_size_);
+			website->initialize(site_name.c_str(), seed->start_url_, seed->index_url_, seed->pic_url_,seed->pic_size_);
 			website->begin_process();
 			
 			delete seed;

@@ -8,10 +8,10 @@
 class Cookie
 {
 public:
-	static Cookie* FromString(std::string content);
+	static Cookie* from_string(std::string content);
 	std::string& operator()(std::string key);
-	void  SetCookie(std::string cookie);
-	std::string ToString();
+	void         set_cookie(std::string cookie);
+	std::string to_string();
 	Cookie();
 	~Cookie();
 private:
