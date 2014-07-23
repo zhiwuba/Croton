@@ -50,8 +50,8 @@ int Spider_Seed::load()
 		pugi::xml_node vnode=iter->node();
 		if ( vnode )
 		{
-			std::string seed_name=vnode.attributes("name");
-			std::string pic_size_str=vnode.attributes("pic_size");
+			std::string seed_name=vnode.attribute("name").as_string();
+			std::string pic_size_str=vnode.attribute("pic_size").as_string();
 
 			Seed* seed=new Seed;
 

@@ -1,4 +1,4 @@
-#include "search_md5.h"
+#include "spider_md5.h"
 #include <memory.h>
 #include <stdio.h>
 #include <string.h>
@@ -205,7 +205,7 @@ int Spider_MD5::get_file_md5(const char* buffer, uint length, char* filemd5)
 	MD5_CTX md5;
 	MD5Init(&md5);
 
-	MD5Update(&md5, buffer ,length );
+	MD5Update(&md5, (unsigned char*)buffer ,length );
 
 	unsigned char digest[16]={0};
 	MD5Final(&md5, digest);
@@ -227,7 +227,7 @@ uint Spider_MD5::get_buffer_md5_code( const char* buffer ,int length, uint max )
 	unsigned char digest[16]={0};
 	MD5Final(&md5, digest);
 
-	uint code=md5.state[1]; //(md5.state[1]^md5.state[2]^md5.state[3]^md5.state[4])%max;
+	uint code=md5.state[1]%max; //(md5.state[1]^md5.state[2]^md5.state[3]^md5.state[4])%max;
 
 	return code;
 }

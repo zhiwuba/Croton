@@ -142,7 +142,7 @@ int Spider_Cookie::save_cookie()
 		for ( ;iter!=m_cookie_database.end(); iter++ )
 		{
 			std::string key=iter->first+"\n";
-			std::string value=iter->second->ToString()+"\n";
+			std::string value=iter->second->to_string()+"\n";
 			fwrite(key.c_str(),1, key.size(), file);
 			fwrite(value.c_str(),1, value.size(), file);
 		}

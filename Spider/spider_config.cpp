@@ -234,6 +234,10 @@ int  Spider_Config::set_mysql(std::string& key, std::string& value)
 	{
 		mysql_host_=value;
 	}
+	else if ( key=="db" )
+	{
+		mysql_db_=value;
+	}
 	else if ( key=="port" )
 	{
 		mysql_port_=atoi(value.c_str());
@@ -242,9 +246,10 @@ int  Spider_Config::set_mysql(std::string& key, std::string& value)
 	{
 		mysql_user_=value;
 	}
-	else if(key=="password")
+	else if (key=="password")
 	{
 		mysql_password_=value;
 	}
+
 	return 0;
 }

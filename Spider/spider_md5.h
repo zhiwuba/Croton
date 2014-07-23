@@ -1,7 +1,7 @@
 #ifndef   _FILE_MD5_H_
 #define  _FILE_MD5_H_
 
-#include "spider_define.h"
+#include "spider_common.h"
 
 typedef struct
 {
@@ -57,7 +57,7 @@ public:
 	static int  get_file_md5(const char* filepath, char* filemd5 );
 	static int  get_file_md5(const char* buffer, uint length, char* filemd5);
 
-	static uint get_buffer_md5_code(const char* buffer, int length, uint max);
+	static uint get_buffer_md5_code(const char* buffer, int length, uint max=0xfffffffe);
 };
 
 

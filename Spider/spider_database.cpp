@@ -77,16 +77,23 @@ int Spider_Database::thread_proc(void* param)
 	return 0;
 }
 
-
-
 int Spider_Database::insert_record(const char* website, const char* albums, UrlPtr url_ptr)
 {
 	Recursive_Lock lock(m_queue_mutex);
+
+	std::string file_path="original/"+url_ptr->filename;
+	std::string thumb_path="thumb/"+url_ptr->filename;
+
 	char command[2048];
-	sprintf(command, "INSERT INTO picture (filename,url,date,website,length) VALUES ('%s','%s','%s','%s','%d')",
-		url_ptr->filename,url_ptr->url,Spider_Config::instance().current_date_.c_str(), website ,url_ptr->length);	
+	sprintf(command, "INSERT INTO hd_paints (file_path,thumb_path,date_added,header,comment,source_url,source_website) VALUES ('%s' , '%s', NOW(), '%s', '%s', '%s', '%s')",
+		file_path.c_str(), 
+		thumb_path.c_str(), 
+		"", 
+		url_ptr->comment,
+		url_ptr->url,
+		website );
+
 	m_commands.push(std::string(command));
-	
 	return 0;
 }
 
@@ -97,7 +104,7 @@ int Spider_Database::connect()
 		Spider_Config::instance().mysql_host_.c_str(),
 		Spider_Config::instance().mysql_user_.c_str(),
 		Spider_Config::instance().mysql_password_.c_str(),
-		kDatabaseName,
+		Spider_Config::instance().mysql_db_.c_str(),
 		Spider_Config::instance().mysql_port_,NULL,0);
 	if ( ret==NULL )
 	{

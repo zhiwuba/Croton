@@ -42,7 +42,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(MY_INC_ROOT)\libevent&quot;;&quot;$(MY_INC_ROOT)\mpir&quot;;D:\OpenSource\boost_1_55_0\;&quot;$(MY_INC_ROOT)\mysql\&quot;"
+				AdditionalIncludeDirectories="&quot;$(MY_INC_ROOT)\libevent&quot;;&quot;$(MY_INC_ROOT)\mpir&quot;;D:\OpenSource\boost_1_54_0\;&quot;$(MY_INC_ROOT)\mysql\&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				StringPooling="true"
 				MinimalRebuild="true"
@@ -289,14 +289,6 @@
 			</File>
 			<File
 				RelativePath="..\Spider\spider_website.h"
-				>
-			</File>
-			<File
-				RelativePath="..\Spider\spider_website_general.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\Spider\spider_website_general.h"
 				>
 			</File>
 			<Filter

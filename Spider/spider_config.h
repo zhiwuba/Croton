@@ -37,6 +37,7 @@ public:
 	
 	//Mysql
 	std::string  mysql_host_;
+	std::string  mysql_db_;
 	int             mysql_port_;
 	std::string  mysql_user_;
 	std::string  mysql_password_;

@@ -8,7 +8,7 @@
 			<url>http://ww4.sinaimg.cn/mw690/6aaeb4b8gw1eih273ms6ag205605yx6l.gif</url>
 		</pic>
 		<index>
-			<url>http://photo.weibo.com/\d+/talbum/detail/photo_id/\d+</url>
+			<url comment="body/container/">http://photo.weibo.com/\d+/talbum/detail/photo_id/\d+</url>
 			<url>http://photo.weibo.com/1789834424/talbum/detail/photo_id/3733779130680681</url>
 		</index>
 	</seed>

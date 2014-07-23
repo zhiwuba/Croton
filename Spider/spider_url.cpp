@@ -1,7 +1,8 @@
 #include "spider_url.h"
 #include "spider_utils.h"
 #include "spider_common.h"
-
+#include "spider_md5.h"
+#define NEW_METHOD 1
 
 std::string url_encode(std::string source_url)
 {
@@ -86,10 +87,9 @@ UrlPtr create_url(std::string url, URLTYPE  type)
 #if NEW_METHOD
 unsigned int url_hash_code(UrlPtr url)
 {
-	
-	
+	uint md5_code=Spider_MD5::get_buffer_md5_code(url->url, strlen(url->url));
+	return md5_code;
 }
-
 #else
 unsigned int url_hash_code(UrlPtr url)
 {

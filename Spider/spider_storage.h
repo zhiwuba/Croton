@@ -16,8 +16,10 @@ public:
 	int uninitialize();
 
 	int write_file(const char* website, UrlPtr url_ptr );
-	int write_file(const char* website, const char* albums, UrlPtr url_ptr );
+	//int write_file(const char* website, const char* albums, UrlPtr url_ptr );
 	
+	int rename_filename_with_md5(UrlPtr url_ptr);
+
 private:
 	Spider_Storage();
 	Spider_Database* m_database;

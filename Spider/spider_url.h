@@ -45,6 +45,7 @@ public:
 	int      length;      //the length of response.
 	void*  belong ;    //the website which url belong.
 	URLTYPE type;    //whether picture or html.
+	char* comment;  //comment of gifs.
 };
 
 typedef  boost::shared_ptr<URL>   UrlPtr; 

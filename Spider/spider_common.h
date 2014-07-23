@@ -12,10 +12,15 @@
 
 #include "Porting/CrotonPorting.h"
 
+typedef unsigned int  uint;
+typedef unsigned char uchar;
+typedef unsigned __int64  uint64_t;
+
+
 static const  int   kDomainTableSize=100*1024;   //100K
 static const  int   kDomainHashSize=20000;        //2W个域名
 static const  int   kUrlTableSize=100*1024; 
-static const  int   kUrlHashSize=64000000; 
+static const  uint   kUrlHashSize=0xfffffffe;    //513M的过滤表
 
 static const  int	kThreadPoolSize=20;   //开启20个线程池
 static const  int   kProcessCountPer=20;  //每次处理
@@ -26,7 +31,6 @@ static const  char*  kSeedFileName="spider.seed";
 static const  char*  KCookieFileName="spider.cookie";
 static const  char*  kDnsFileName="spider.dns";
 static const  char*  kHistoryFileName="spider.history";
-static const  char*  kDatabaseName="storage";
 
 
 typedef std::vector<std::string> StrVec;
