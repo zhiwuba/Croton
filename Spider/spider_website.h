@@ -10,12 +10,12 @@ class Spider_WebSite
 public:
 	Spider_WebSite(){};
 	~Spider_WebSite(){};
-	virtual int initialize(const char* website_name, StrVec& seeds,StrVec& index_regex, StrVec& pic_regex, IntPair& pic_size);
+	virtual int initialize(const char* website_name, StrVec& starts,StrVec& index_regex, StrVec& pic_regex, IntPair& pic_size);
 	virtual int begin_process();
 	virtual int process(UrlPtr&  url_ptr)=0;
 
 public:
-	StrVec      m_seeds;
+	StrVec      m_starts;
 	std::string m_website_name;
 	IntPair      m_pic_size; 
 
@@ -37,8 +37,15 @@ public:
 	virtual int process(UrlPtr&  url_ptr);
 };
 
+//对微博网站进行解析
+class Spider_Website_Weibo:public Spider_WebSite
+{
+public:
+	int Process(UrlPtr&  url_ptr);
 
-
-
+private:
+	int parse_start_page(UrlPtr& url);
+	int get_pic_from_index(UrlPtr url, UrlPtrVec& url_array);
+};
 
 #endif

@@ -1,15 +1,15 @@
 <seeds>
 	<seed name="weibo" pic_size="300-20240" author="1" >
 		<start>
-			<url></url>
+			<url>http://photo.weibo.com/albums/get_all?uid=1850235592&page=1&count=20</url>
 			<url></url>
 		</start>
 		<pic>
+			<url>http://ww2.sinaimg.cn/mw690/6e485ac8jw1eilecqwgdxj20dw0ijtaw.jpg</url>
 			<url>http://ww4.sinaimg.cn/mw690/6aaeb4b8gw1eih273ms6ag205605yx6l.gif</url>
 		</pic>
 		<index>
-			<url comment="body/container/">http://photo.weibo.com/\d+/talbum/detail/photo_id/\d+</url>
-			<url>http://photo.weibo.com/1789834424/talbum/detail/photo_id/3733779130680681</url>
+			<url>http://photo.weibo.com/photos/get_all?uid=%s&album_id=%s&count=%d&page=%d&type=%d</url>
 		</index>
 	</seed>
 	
