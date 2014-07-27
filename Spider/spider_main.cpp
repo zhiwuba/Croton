@@ -8,6 +8,9 @@
 #include "spider_url_rinse.h"
 #include "spider_http_client.h"
 
+using namespace std;
+using namespace boost::xpressive;
+
 int test_rinse()
 {
 	UrlPtrVec url_vec;
@@ -40,6 +43,30 @@ int test_regex()
 	boost::xpressive::cregex  reg=boost::xpressive::cregex::compile("http://forgifs.com/gallery/main.php\\?g2_page=\\d{1,3}");
 	bool bret=regex_match("http://forgifs.com/gallery/main.php?g2_page=6", reg);
 	return 0;
+}
+
+
+void  test_regex2()
+{
+	char buffer[];
+	//cregex my_regex=cregex::compile("^<div class=\"ugc-detail-container\">(.)+<p class=\"share-summary\">(.)+</p></div>$");
+	cregex my_regex=cregex::compile("^<div class=\"ugc-detail-container\">(.)+</div>$");
+	//cregex my_regex=cregex::compile("^<p class=\"share-summary\">(.)+</p>$");
+
+	cmatch what;
+	if( regex_search(buffer, what, my_regex) )
+	{
+		int size=what.size();
+		for ( int i=0; i< what.size(); i++ )
+		{
+			cout<<what[i]<<endl;
+			printf("\n\n\n\n");
+		}
+	}
+	else
+	{
+		printf("not found . \n");
+	}
 }
 
 int test_httpclientbase()
