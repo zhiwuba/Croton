@@ -104,8 +104,14 @@ int Spider_Cookie::login()
 	int nret=0;
 	if ( load_cookie()!=0 )
 	{
-		int ret1=Spider_Cookie::instance().login_renren("xiabingliu@163.com", "");
-		int ret2=Spider_Cookie::instance().login_weibo("xiabingliu@163.com","");
+		int ret1=Spider_Cookie::instance().login_renren(
+			Spider_Config::instance().tokens_["renren"]->account,
+			Spider_Config::instance().tokens_["renren"]->password);
+		
+		int ret2=Spider_Cookie::instance().login_weibo(
+			Spider_Config::instance().tokens_["weibo"]->account,
+			Spider_Config::instance().tokens_["weibo"]->password);
+
 		if ( ret1==0&&ret2==0 )
 		{
 			save_cookie();

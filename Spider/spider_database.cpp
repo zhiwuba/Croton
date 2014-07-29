@@ -81,8 +81,10 @@ int Spider_Database::insert_record(const char* website, const char* albums, UrlP
 {
 	Recursive_Lock lock(m_queue_mutex);
 
-	std::string file_path="original/"+url_ptr->filename;
-	std::string thumb_path="thumb/"+url_ptr->filename;
+	std::string file_path="original/";
+	file_path+=url_ptr->filename;
+	std::string thumb_path="thumb/";
+	thumb_path+=url_ptr->filename;
 
 	char command[2048];
 	sprintf(command, "INSERT INTO hd_paints (file_path,thumb_path,date_added,header,comment,source_url,source_website) VALUES ('%s' , '%s', NOW(), '%s', '%s', '%s', '%s')",

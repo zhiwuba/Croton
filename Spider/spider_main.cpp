@@ -48,7 +48,7 @@ int test_regex()
 
 void  test_regex2()
 {
-	char buffer[];
+	char buffer[1023];
 	//cregex my_regex=cregex::compile("^<div class=\"ugc-detail-container\">(.)+<p class=\"share-summary\">(.)+</p></div>$");
 	cregex my_regex=cregex::compile("^<div class=\"ugc-detail-container\">(.)+</div>$");
 	//cregex my_regex=cregex::compile("^<p class=\"share-summary\">(.)+</p>$");
@@ -113,13 +113,19 @@ int main()
 		{
 			Spider_WebSite* website=Spider_WebSite_Factory::create_website(site_name);
 			website->initialize(site_name.c_str(), seed->start_url_, seed->index_url_, seed->pic_url_,seed->pic_size_);
-			website->begin_process();
+			website->begin_process();  //处理seed节点
 			
 			delete seed;
 		}
-		Sleep(1000*1000);
+		else
+		{
+			LLOG(L_DEBUG, "load all seed.");
+			break;
+		}
+		Sleep(1000*1000); //1s
 	}
 	
+	Spider_Executor::instance().wait_complete(); //等待完成
 	
 	Spider_Url_Rinse::instance().uninitialize();
 	Spider_Executor::instance().uninitialize();

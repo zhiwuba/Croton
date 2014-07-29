@@ -27,7 +27,7 @@ static const  int   kProcessCountPer=20;  //每次处理
 static const  int   kMinSet=5;               //还有5个的时候请求
  
 static const  char*  kConfigFileName="spider.conf"; 
-static const  char*  kSeedFileName="spider.seed";
+static const  char*  kSeedFileName="seed.xml";
 static const  char*  KCookieFileName="spider.cookie";
 static const  char*  kDnsFileName="spider.dns";
 static const  char*  kHistoryFileName="spider.history";

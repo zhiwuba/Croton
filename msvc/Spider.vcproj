@@ -64,7 +64,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="Ws2_32.lib Porting.lib Iphlpapi.lib libevent_core.lib libevent_extras.lib lib_json.lib mpir.lib cryptlib.lib"
-				OutputFile="$(MY_LIB_ROOT)\$(ProjectName).exe"
+				OutputFile="$(SolutionDir)..\bin\$(ProjectName).exe"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="1"

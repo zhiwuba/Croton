@@ -40,16 +40,22 @@ int Spider_Seed::load()
 {
 	std::string seed_path=Spider_Config::instance().module_path_+kSeedFileName;
 	pugi::xml_document doc;
-	doc.load_file(seed_path.c_str());
 
-	const char* query_path="/seeds";
+	pugi::xml_parse_result result=doc.load_file(seed_path.c_str());
+	if(pugi::status_ok!=result.status )
+	{
+		LLOG(L_ERROR,"load seed file error.");
+		return -1;
+	}
+
+	const char* query_path="/seeds/seed";
 	pugi::xpath_node_set seed_set=doc.select_nodes(query_path);
 
 	for ( pugi::xpath_node_set::const_iterator iter=seed_set.begin(); iter!=seed_set.end(); ++iter )
 	{
 		pugi::xml_node vnode=iter->node();
 		if ( vnode )
-		{
+		{   
 			std::string seed_name=vnode.attribute("name").as_string();
 			std::string pic_size_str=vnode.attribute("pic_size").as_string();
 
@@ -59,19 +65,19 @@ int Spider_Seed::load()
 			pugi::xpath_node_set pic_urls=vnode.select_nodes("pic/url");
 			pugi::xpath_node_set index_urls=vnode.select_nodes("index/url");
 
-			for ( pugi::xpath_node_set::const_iterator start_iter=seed_set.begin(); start_iter!=seed_set.end(); ++start_iter )
+			for ( pugi::xpath_node_set::const_iterator start_iter=start_urls.begin(); start_iter!=start_urls.end(); ++start_iter )
 			{
-				seed->start_url_.push_back(start_iter->node().value());
+				seed->start_url_.push_back(start_iter->node().text().as_string());
 			}
 
-			for ( pugi::xpath_node_set::const_iterator pic_iter=seed_set.begin(); pic_iter!=seed_set.end(); ++pic_iter )
+			for ( pugi::xpath_node_set::const_iterator pic_iter=pic_urls.begin(); pic_iter!=pic_urls.end(); ++pic_iter )
 			{
-				seed->pic_url_.push_back(pic_iter->node().value());
+				seed->pic_url_.push_back(pic_iter->node().text().as_string());
 			}
 
-			for ( pugi::xpath_node_set::const_iterator index_iter=seed_set.begin(); index_iter!=seed_set.end(); ++index_iter )
+			for ( pugi::xpath_node_set::const_iterator index_iter=index_urls.begin(); index_iter!=index_urls.end(); ++index_iter )
 			{
-				seed->index_url_.push_back(index_iter->node().value());
+				seed->index_url_.push_back(index_iter->node().text().as_string());
 			}
 	
 			seed->set_pic_size(pic_size_str.c_str());

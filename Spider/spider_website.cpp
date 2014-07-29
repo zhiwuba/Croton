@@ -1,6 +1,7 @@
 #include "spider_website.h"
 #include "spider_url_rinse.h"
 #include "spider_storage.h"
+#include "json/json.h"
 
 /////////////////////////////////////////////////
 int Spider_WebSite::initialize(const char* website_name, StrVec& seeds,StrVec& index_regex, StrVec& pic_regex, IntPair& pic_size)
@@ -108,7 +109,7 @@ goon:
 ////////////////////////////////////////////////////////////////////////
 #define  PIC_COUNT_PER_PAGE     30
 
-int Spider_Website_Weibo::Process(UrlPtr& url_ptr)
+int Spider_Website_Weibo::process(UrlPtr& url_ptr)
 {
 	int  ret=0;
 	if ( url_ptr->type==UT_HTML )
@@ -146,7 +147,7 @@ int Spider_Website_Weibo::Process(UrlPtr& url_ptr)
 }
 
 
-int Spider_Website_Weibo::get_pic_from_index(UrlPtr url, UrlPtrVec& url_array)
+int Spider_Website_Weibo::get_pic_from_index(UrlPtr& url)
 {
 	Json::Reader reader;
 	Json::Value   albums_info;
@@ -169,7 +170,7 @@ int Spider_Website_Weibo::get_pic_from_index(UrlPtr url, UrlPtrVec& url_array)
 					{
 						if ( regex_match(photo_url.c_str(), m_pic_regex_vec[i]) )
 						{   //符合规则的图片
-							UrlPtr new_url=create_url(url, UT_PICT);
+							UrlPtr new_url=create_url(photo_url, UT_PICT);
 							new_url->belong=this;
 							Spider_Url_Rinse::instance().rinse_url(new_url);
 							break;

@@ -41,11 +41,11 @@ public:
 class Spider_Website_Weibo:public Spider_WebSite
 {
 public:
-	int Process(UrlPtr&  url_ptr);
+	virtual int process(UrlPtr&  url_ptr);
 
 private:
 	int parse_start_page(UrlPtr& url);
-	int get_pic_from_index(UrlPtr url, UrlPtrVec& url_array);
+	int get_pic_from_index(UrlPtr& url);
 };
 
 #endif

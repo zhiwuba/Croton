@@ -53,6 +53,29 @@ int Spider_Executor::put_urls(UrlPtrVec& url_ptrs)
 	return 0;
 }
 
+int Spider_Executor::wait_complete()
+{
+	int count=0;
+	while( !m_exit )
+	{
+		int num=m_thread_pool->get_worker_count();
+		bool is_empty=m_task_queue.empty();
+		if( num==0 && is_empty )
+			count++;
+		else
+			count=0;
+		
+		if( count>10 )
+		{
+			LLOG(L_DEBUG, "spider is idle. ready to exit.");
+			break;	
+		}
+
+		Sleep(1000*1000*10);
+	}
+	return 0;
+}
+
 int Spider_Executor::main_thread_aid()
 {
 #ifdef WIN32
