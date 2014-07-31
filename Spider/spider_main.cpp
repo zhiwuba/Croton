@@ -94,7 +94,12 @@ int test_httpclientbase()
 
 int main()
 {
-	init_network();
+	int ret=init_network();
+	if( ret!=0 )
+	{
+		LLOG(L_ERROR, "init_network error. ");
+		return -1;
+	}
 	
 	Spider_Config::instance().load();
 	Spider_Seed spider_seed;
@@ -112,20 +117,18 @@ int main()
 		if ( seed!=NULL )
 		{
 			Spider_WebSite* website=Spider_WebSite_Factory::create_website(site_name);
-			website->initialize(site_name.c_str(), seed->start_url_, seed->index_url_, seed->pic_url_,seed->pic_size_);
+			website->initialize(site_name.c_str(), seed);
 			website->begin_process();  //处理seed节点
-			
-			delete seed;
 		}
 		else
 		{
 			LLOG(L_DEBUG, "load all seed.");
 			break;
 		}
-		Sleep(1000*1000); //1s
+		Sleep(1000); //1s
 	}
 	
-	Spider_Executor::instance().wait_complete(); //等待完成
+	Spider_Executor::instance().execute_loop(); //循环等待完成
 	
 	Spider_Url_Rinse::instance().uninitialize();
 	Spider_Executor::instance().uninitialize();

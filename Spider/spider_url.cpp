@@ -69,6 +69,7 @@ const char*  get_filename_from_uri(const char* uri)
 
 UrlPtr create_url(std::string url, URLTYPE  type)
 {
+	assert(!url.empty());
 	std::string host, uri;
 	int port=80;
 	prase_url(url,host,uri, port);

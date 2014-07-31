@@ -55,7 +55,7 @@ int Spider_Seed::load()
 	{
 		pugi::xml_node vnode=iter->node();
 		if ( vnode )
-		{   
+		{
 			std::string seed_name=vnode.attribute("name").as_string();
 			std::string pic_size_str=vnode.attribute("pic_size").as_string();
 
@@ -72,12 +72,25 @@ int Spider_Seed::load()
 
 			for ( pugi::xpath_node_set::const_iterator pic_iter=pic_urls.begin(); pic_iter!=pic_urls.end(); ++pic_iter )
 			{
-				seed->pic_url_.push_back(pic_iter->node().text().as_string());
+				seed->pic_regex_.push_back( boost::xpressive::cregex::compile( pic_iter->node().text().as_string() ) );
 			}
 
 			for ( pugi::xpath_node_set::const_iterator index_iter=index_urls.begin(); index_iter!=index_urls.end(); ++index_iter )
 			{
-				seed->index_url_.push_back(index_iter->node().text().as_string());
+				Seed::Index_Regex index_regex;
+				xml_attribute com_attr=index_iter->node().attribute("comment");
+				if( com_attr.empty() )
+				{
+					index_regex.has_comment=false;
+					index_regex.index_regex=boost::xpressive::cregex::compile(index_iter->node().text().as_string());
+				}
+				else
+				{
+					index_regex.has_comment=true;
+					index_regex.index_regex=boost::xpressive::cregex::compile(index_iter->node().text().as_string());
+					index_regex.comment_regex=boost::xpressive::cregex::compile(com_attr.as_string());
+				}
+				seed->index_regex_.push_back(index_regex);
 			}
 	
 			seed->set_pic_size(pic_size_str.c_str());

@@ -7,7 +7,8 @@
 
 enum URLTYPE
 {
-	UT_HTML,  //html
+	UT_START, //start
+	UT_INDEX, //index
 	UT_PICT,    //picture
 };
 

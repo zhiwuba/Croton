@@ -125,8 +125,6 @@ std::string get_date()
 	return std::string(buffer); 
 }
 
-
-
 /*
  求两个字符串的相似度
 */
@@ -522,6 +520,5 @@ std::string RSA_encrypt(const char* data ,  const char* n, const char* e )
 
 	return result;
 }
-
 
 

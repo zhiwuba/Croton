@@ -35,12 +35,7 @@ Spider_Url_Rinse::Spider_Url_Rinse(void)
 	memset(m_history_url_table,0, kUrlHashSize/8);
 
 	m_queue_mutex=recursivemutex_create();
-	m_evbase = event_base_new();	
-	if (!m_evbase)
-		LLOG(L_ERROR,"event_base_new error.");
-	m_evdnsbase = evdns_base_new(m_evbase, 1);
-	if (!m_evdnsbase )
-		LLOG(L_ERROR,"evdns_base_new error.");
+
 }
 
 Spider_Url_Rinse::~Spider_Url_Rinse(void)
@@ -61,8 +56,7 @@ Spider_Url_Rinse::~Spider_Url_Rinse(void)
 		delete[] m_history_url_table;
 		m_history_url_table=NULL;
 	}
-	evdns_base_free(m_evdnsbase, 0);
-	event_base_free(m_evbase);
+
 }
 
 int  Spider_Url_Rinse::initialize()
@@ -71,6 +65,28 @@ int  Spider_Url_Rinse::initialize()
 	{
 		read_history();
 	}
+
+	m_evbase = event_base_new();	
+	if (!m_evbase)
+	{
+		LLOG(L_ERROR,"event_base_new error.");
+		return -1;
+	}
+	m_evdnsbase = evdns_base_new(m_evbase, 0);
+	if (!m_evdnsbase )
+	{
+		LLOG(L_ERROR,"evdns_base_new error.");
+		return -1;
+	}
+
+#ifdef WIN32
+	int ret=evdns_base_nameserver_ip_add(m_evdnsbase, "8.8.8.8");
+	if( ret!=0 )
+	{
+		LLOG(L_ERROR, "evdns_base_nameserver_add error.");
+	}
+#endif
+
 	return 0;
 }
 
@@ -78,6 +94,8 @@ int  Spider_Url_Rinse::initialize()
 int Spider_Url_Rinse::uninitialize()
 {
 	write_history();
+	evdns_base_free(m_evdnsbase, 0);
+	event_base_free(m_evbase);
 	return 0;
 }
 
@@ -174,6 +192,7 @@ void Spider_Url_Rinse::dns_parse(UrlPtrVec& url_array)
 
 		hints.ai_family = AF_UNSPEC;
 		hints.ai_socktype = SOCK_STREAM;
+		hints.ai_flags = EVUTIL_AI_CANONNAME; 
 		hints.ai_protocol = IPPROTO_TCP;
 
 		++g_pending_requests;
@@ -188,7 +207,11 @@ void Spider_Url_Rinse::dns_parse(UrlPtrVec& url_array)
 		}
 	}
 	if (g_pending_requests)
-		event_base_dispatch(m_evbase);
+	{
+		int ret=event_base_loop(m_evbase, 0);
+		if( ret!=0 )
+			LLOG(L_ERROR, "event_base_loop error code %d", ret);
+	}
 	return;
 }
 
@@ -203,8 +226,7 @@ void Spider_Url_Rinse::dns_callback(int errcode, struct evutil_addrinfo *addr, v
 	}
 	else
 	{
-		struct evutil_addrinfo *ai;
-		for (ai = addr; ai->ai_next; ai = ai->ai_next) {} /*取最后一个IP */
+		struct evutil_addrinfo *ai=addr;
 		char buf[128];
 		const char *s = NULL;
 		if (addr->ai_family == AF_INET)
@@ -238,7 +260,7 @@ bool  Spider_Url_Rinse::search_and_record_history(UrlPtr url)
 	unsigned int code=url_hash_code(url);
 	unsigned int pos=code/8;
 	unsigned int bits=1<<(code%8);
-	bool bret=m_url_table[pos]&bits;
+	bool bret=m_history_url_table[pos]&bits;
 	m_history_url_table[pos]=m_history_url_table[pos]|bits;
 	return bret;
 }
@@ -246,7 +268,7 @@ bool  Spider_Url_Rinse::search_and_record_history(UrlPtr url)
 
 int Spider_Url_Rinse::read_history()
 {
-	std::string file_path=Spider_Config::instance().cookie_path_+"\\"+kHistoryFileName;
+	std::string file_path=Spider_Config::instance().history_path_+"\\"+kHistoryFileName;
 	FILE* file=fopen(file_path.c_str(),"rb");
 	if ( file!=NULL )
 	{
@@ -267,7 +289,7 @@ int Spider_Url_Rinse::read_history()
 
 int Spider_Url_Rinse::write_history()
 {
-	std::string file_path=Spider_Config::instance().cookie_path_+"\\"+kHistoryFileName;
+	std::string file_path=Spider_Config::instance().history_path_+"\\"+kHistoryFileName;
 	FILE* file=fopen(file_path.c_str(), "wb");
 	if ( file!=NULL )
 	{

@@ -38,11 +38,11 @@ int Spider_Storage::write_file(const char* website, UrlPtr url_ptr )
 {
 	if ( website!=NULL&&url_ptr->filename!=NULL&&url_ptr->response!=NULL )
 	{
+		// 记录表中没有 可以入库
 		if ( false==Spider_Url_Rinse::instance().search_and_record_history(url_ptr) )
-		{  
+		{
 			boost::filesystem::path  file_path=Spider_Config::instance().storage_path_;
-			file_path /=website;
-			file_path /=Spider_Config::instance().current_date_;
+
 			bool  ret=true;
 			if ( !exists(file_path) )
 			{
@@ -54,7 +54,7 @@ int Spider_Storage::write_file(const char* website, UrlPtr url_ptr )
 				file_path/=url_ptr->filename;
 				if ( boost::filesystem::exists(file_path) )
 				{
-					LLOG(L_DEBUG, "%s is already exist.", file_path.c_str());
+					LLOG(L_DEBUG, "%s is already exist.", file_path.string().c_str());
 				}
 				else
 				{

@@ -4,22 +4,12 @@
 #include "json/json.h"
 
 /////////////////////////////////////////////////
-int Spider_WebSite::initialize(const char* website_name, StrVec& seeds,StrVec& index_regex, StrVec& pic_regex, IntPair& pic_size)
+int Spider_WebSite::initialize(const char* website_name, Seed* seed)
 {
 	if ( website_name!=NULL )
 	{
 		m_website_name.assign(website_name);
-
-		for ( int i =0 ;i< index_regex.size(); i++ )
-		{
-			m_index_regex_vec.push_back(boost::xpressive::cregex::compile(index_regex[i]));
-		}
-		for ( int i=0; i<pic_regex.size(); i++)
-		{
-			m_pic_regex_vec.push_back(boost::xpressive::cregex::compile(pic_regex[i]));
-		}
-		m_pic_size=pic_size;
-		m_starts=seeds; //赋值
+		m_seed=seed;
 	}
 	else
 	{
@@ -31,10 +21,10 @@ int Spider_WebSite::initialize(const char* website_name, StrVec& seeds,StrVec& i
 
 int Spider_WebSite::begin_process()
 {
-	for (int i=0; i<m_starts.size(); i++  )
+	for (int i=0; i<m_seed->start_url_.size(); i++  )
 	{
-		std::string url_str=m_starts[i];
-		UrlPtr url=create_url(url_str.c_str(),UT_HTML);
+		std::string url_str=m_seed->start_url_[i];
+		UrlPtr url=create_url(url_str.c_str(),UT_START);
 		url->belong=(void*)this;
 		Spider_Url_Rinse::instance().rinse_url(url);
 	}
@@ -60,7 +50,7 @@ Spider_WebSite* Spider_WebSite_Factory::create_website(std::string domain)
 /////////////////////////////////////////////////////////////////////////////////
 int Spider_Website_General::process(UrlPtr&  url_ptr)
 {
-	if ( url_ptr->type==UT_HTML )
+	if ( url_ptr->type==UT_START || url_ptr->type==UT_INDEX )
 	{
 		StrVec urls;
 		char* html=url_ptr->response;
@@ -70,22 +60,40 @@ int Spider_Website_General::process(UrlPtr&  url_ptr)
 		{
 			bool bcont=false;
 			std::string url=urls[i];
-			for (int i=0 ;i<m_index_regex_vec.size(); i++ )
+			for (int i=0 ;i<m_seed->index_regex_.size(); i++ )
 			{
-				if ( regex_match(url.c_str(), m_index_regex_vec[i]) )
+				if ( regex_match(url.c_str(), m_seed->index_regex_[i].index_regex) )
 				{ //索引文件
-					UrlPtr new_url=create_url(url, UT_HTML);
+					UrlPtr new_url=create_url(url, UT_INDEX);
 					new_url->belong=this;
 					Spider_Url_Rinse::instance().rinse_url(new_url);
 					goto goon;
 				}
 			}
-			for ( int i=0 ;i <m_pic_regex_vec.size(); i++ )
+			for ( int i=0 ;i <m_seed->pic_regex_.size(); i++ )
 			{
-				if ( regex_match(url.c_str(), m_pic_regex_vec[i]) )
+				if ( regex_match(url.c_str(), m_seed->pic_regex_[i]) )
 				{//图片文件
+					int i=0;
+					bool  has_comment=false;
+					for( ; i<m_seed->index_regex_.size(); i++ ) //查看index url类型
+					{
+						if( regex_match(url_ptr->url, m_seed->index_regex_[i].index_regex) )
+						{
+							has_comment=m_seed->index_regex_[i].has_comment;
+							break;
+						}
+					}
+
 					UrlPtr new_url=create_url(url, UT_PICT);
-					new_url->belong=this;
+					new_url->belong=this;					
+					if( has_comment )
+					{
+						cmatch match;
+						regex_search(url_ptr->response,match, m_seed[i]);
+						new_url->comment=strdup("");  //TODO: 解析注释
+					}
+
 					Spider_Url_Rinse::instance().rinse_url(new_url);
 					goto goon;
 				}
@@ -96,7 +104,7 @@ goon:
 	}
 	else if ( url_ptr->type==UT_PICT )
 	{
-		if ( url_ptr->length>=m_pic_size.first&&url_ptr->length<=m_pic_size.second )
+		if ( url_ptr->length>=m_seed->pic_size_.first&&url_ptr->length<=m_seed->pic_size_.second )
 		{   //大小符合
 			Spider_Storage::instance().write_file(m_website_name.c_str(), url_ptr);
 		}
@@ -118,9 +126,9 @@ int Spider_Website_Weibo::process(UrlPtr& url_ptr)
 		char* html=url_ptr->response;
 		
 		bool is_index_page=false;
-		for (int i=0 ;i<m_index_regex_vec.size(); i++ )
+		for (int i=0 ;i<m_seed->index_regex_.size(); i++ )
 		{
-			if ( regex_match(url_ptr->url, m_index_regex_vec[i]) )
+			if ( regex_match(url_ptr->url, m_seed->index_regex_[i].index_regex ) )
 			{  //是索引页
 				is_index_page=true;
 				break;
@@ -138,7 +146,7 @@ int Spider_Website_Weibo::process(UrlPtr& url_ptr)
 	}
 	else if ( url_ptr->type==UT_PICT )
 	{
-		if ( url_ptr->length>=m_pic_size.first&&url_ptr->length<=m_pic_size.second )
+		if ( url_ptr->length>=m_seed->pic_size_.first&&url_ptr->length<=m_seed->pic_size_.second )
 		{   //大小符合
 			Spider_Storage::instance().write_file(m_website_name.c_str(), url_ptr);
 		}
@@ -166,12 +174,13 @@ int Spider_Website_Weibo::get_pic_from_index(UrlPtr& url)
 					const char* caption=info["caption_render"].asCString();
 					std::string ansi_cap=unicode_to_ansi(caption);
 					
-					for ( int i=0 ;i <m_pic_regex_vec.size(); i++ )
+					for ( int i=0 ;i <m_seed->pic_regex_.size(); i++ )
 					{
-						if ( regex_match(photo_url.c_str(), m_pic_regex_vec[i]) )
+						if ( regex_match(photo_url.c_str(), m_seed->pic_regex_[i]) )
 						{   //符合规则的图片
 							UrlPtr new_url=create_url(photo_url, UT_PICT);
 							new_url->belong=this;
+							new_url->comment=strdup(""); //TODO:
 							Spider_Url_Rinse::instance().rinse_url(new_url);
 							break;
 						}

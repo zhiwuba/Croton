@@ -2,7 +2,7 @@
 #include "spider_http_client.h"
 #include "spider_website.h"
 #include "spider_common.h"
-
+#include "spider_url_rinse.h"
 
 
 Spider_Executor::Spider_Executor()
@@ -37,7 +37,7 @@ int Spider_Executor::uninitialize()
 int Spider_Executor::put_url(UrlPtr url_ptr)
 {
 	Recursive_Lock lock(m_queue_mutex);
-	LLOG(L_TRACE,"Executor: put_urls %s. \n", url_ptr->url);
+	LLOG(L_TRACE,"Executor: put_urls %s. ", url_ptr->url);
 	m_task_queue.push(url_ptr);
 	return 0;
 }
@@ -47,14 +47,15 @@ int Spider_Executor::put_urls(UrlPtrVec& url_ptrs)
 	Recursive_Lock lock(m_queue_mutex);
 	for (int i=0; i<url_ptrs.size(); ++i)
 	{
-		LLOG(L_TRACE,"Executor: put_urls %s. \n", url_ptrs[i]->url);
+		LLOG(L_TRACE,"Executor: put_urls %s. ", url_ptrs[i]->url);
 		m_task_queue.push(url_ptrs[i]);
 	}
 	return 0;
 }
 
-int Spider_Executor::wait_complete()
+int Spider_Executor::execute_loop()
 {
+	long last_write_time=GetTickCount();
 	int count=0;
 	while( !m_exit )
 	{
@@ -70,8 +71,17 @@ int Spider_Executor::wait_complete()
 			LLOG(L_DEBUG, "spider is idle. ready to exit.");
 			break;	
 		}
-
-		Sleep(1000*1000*10);
+		
+		if( GetTickCount()-last_write_time>kRecordHistoryInterval)
+		{
+			long start=GetTickCount();
+			Spider_Url_Rinse::instance().write_history();
+			long cost=GetTickCount()-start;
+			LLOG(L_TRACE, "execute_loop write_history cost %ld. ", cost);
+			last_write_time=GetTickCount();
+		}
+		
+		Sleep(1000*10);
 	}
 	return 0;
 }

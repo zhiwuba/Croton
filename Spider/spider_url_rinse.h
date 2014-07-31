@@ -27,7 +27,7 @@ public:
 
 	bool   search_and_record_history(UrlPtr url);
 
-	bool   IsEmpty();
+	int      write_history();
 
 private:	
 	Spider_Url_Rinse(void);
@@ -40,7 +40,7 @@ private:
 	bool  search_and_record_url(UrlPtr url);     //¼ì²é²¢Ìí¼Ó
 	
 	int read_history();   //history 
-	int write_history();
+
 
 
 	struct event_base *m_evbase;

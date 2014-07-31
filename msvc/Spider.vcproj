@@ -204,10 +204,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\Spider\spider_define.h"
-				>
-			</File>
-			<File
 				RelativePath="..\Spider\spider_executor.cpp"
 				>
 			</File>

@@ -18,7 +18,7 @@ public:
 	int put_url(UrlPtr url_ptr);
 	int put_urls(UrlPtrVec& url_ptrs);
 
-	int wait_complete();
+	int execute_loop();
 	
 private:
 	Spider_Executor();
