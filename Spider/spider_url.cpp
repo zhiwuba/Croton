@@ -80,7 +80,7 @@ UrlPtr create_url(std::string url, URLTYPE  type)
 	object->filename=strdup(get_filename_from_uri(uri.c_str()));
 	object->port=port;
 	object->type=type;
-	
+	object->comment=strdup("");
 	return object;
 }
 

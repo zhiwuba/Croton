@@ -50,7 +50,7 @@ Spider_WebSite* Spider_WebSite_Factory::create_website(std::string domain)
 /////////////////////////////////////////////////////////////////////////////////
 int Spider_Website_General::process(UrlPtr&  url_ptr)
 {
-	if ( url_ptr->type==UT_START || url_ptr->type==UT_INDEX )
+	if ( url_ptr->type==UT_START || url_ptr->type==UT_INDEX)
 	{
 		StrVec urls;
 		char* html=url_ptr->response;
@@ -70,28 +70,33 @@ int Spider_Website_General::process(UrlPtr&  url_ptr)
 					goto goon;
 				}
 			}
+
 			for ( int i=0 ;i <m_seed->pic_regex_.size(); i++ )
 			{
 				if ( regex_match(url.c_str(), m_seed->pic_regex_[i]) )
-				{//图片文件
-					int i=0;
-					bool  has_comment=false;
-					for( ; i<m_seed->index_regex_.size(); i++ ) //查看index url类型
+				{	//图片文件
+					UrlPtr new_url=create_url(url, UT_PICT);
+					new_url->belong=this;					
+
+					for(int i=0 ; i<m_seed->index_regex_.size(); i++ ) //查看index url类型
 					{
 						if( regex_match(url_ptr->url, m_seed->index_regex_[i].index_regex) )
 						{
-							has_comment=m_seed->index_regex_[i].has_comment;
+							if( m_seed->index_regex_[i].has_comment )
+							{
+								cmatch match;
+								if( regex_search(url_ptr->response,match, m_seed->index_regex_[i].comment_regex) )
+								{
+									if(match.size()==2)
+									{
+										free(new_url->comment);
+										new_url->comment=strdup(match.str(1).c_str());
+										break;
+									}
+								}
+							}
 							break;
 						}
-					}
-
-					UrlPtr new_url=create_url(url, UT_PICT);
-					new_url->belong=this;					
-					if( has_comment )
-					{
-						cmatch match;
-						regex_search(url_ptr->response,match, m_seed[i]);
-						new_url->comment=strdup("");  //TODO: 解析注释
 					}
 
 					Spider_Url_Rinse::instance().rinse_url(new_url);
@@ -108,6 +113,10 @@ goon:
 		{   //大小符合
 			Spider_Storage::instance().write_file(m_website_name.c_str(), url_ptr);
 		}
+		else
+		{
+			Spider_Url_Rinse::instance().search_and_record_history(url_ptr); //不再访问
+		}
 	}
 
 	return 0;
@@ -120,29 +129,15 @@ goon:
 int Spider_Website_Weibo::process(UrlPtr& url_ptr)
 {
 	int  ret=0;
-	if ( url_ptr->type==UT_HTML )
+	if ( url_ptr->type==UT_START )
 	{
-		StrVec urls;
-		char* html=url_ptr->response;
-		
-		bool is_index_page=false;
-		for (int i=0 ;i<m_seed->index_regex_.size(); i++ )
-		{
-			if ( regex_match(url_ptr->url, m_seed->index_regex_[i].index_regex ) )
-			{  //是索引页
-				is_index_page=true;
-				break;
-			}
-		}
-
-		if( is_index_page )
-		{   //从图片索引中解析出图片信息
-			get_pic_from_index(url_ptr);
-		}
-		else
-		{   //从开始页中解析出索引链接
-			parse_start_page(url_ptr);
-		}
+	    //从开始页中解析出索引链接
+		parse_start_page(url_ptr);
+	}
+	else if (url_ptr->type==UT_INDEX  )
+	{
+		//从图片索引中解析出图片信息
+		get_pic_from_index(url_ptr);
 	}
 	else if ( url_ptr->type==UT_PICT )
 	{
@@ -231,7 +226,7 @@ int Spider_Website_Weibo::parse_start_page(UrlPtr& url)
 						sprintf(url, "http://photo.weibo.com/photos/get_all?uid=%s&album_id=%s&count=%d&page=%d&type=%d",
 							album["uid"].asCString(), album["album_id"].asCString(), get_count,  page_num , album["type"].asInt() );
 
-						UrlPtr new_url=create_url(url, UT_HTML);
+						UrlPtr new_url=create_url(url, UT_INDEX);
 						new_url->belong=this;
 						Spider_Url_Rinse::instance().rinse_url(new_url);
 

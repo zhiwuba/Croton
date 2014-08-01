@@ -114,6 +114,8 @@ int Spider_Executor::main_thread_aid()
 					socket_url_map[sock]=url_ptr;
 				}//if
 			}//while
+
+			LLOG(L_TRACE, "m_all_fdset socket count is %d, task_queue size is %d", m_all_fdset.fd_count, m_task_queue.size());
 		}//if
 	
 		if ( m_all_fdset.fd_count>0  )
@@ -129,19 +131,26 @@ int Spider_Executor::main_thread_aid()
 				LLOG(L_ERROR,"select timeout,code %d.", lasterror);
 				break;
 			default: //ÓÐ¶à¸ö
-				for(int i=0; i<(int)m_all_fdset.fd_count; i++)
 				{
-					if(FD_ISSET(m_all_fdset.fd_array[i],&fd_read))
+					int  fd_count=(int)fd_read.fd_count;
+					for(int i=0; i<fd_count; i++)
 					{
-						Job* job=new Job;
-						job->execute_func_=worker_work;
-						job->url_ptr_=socket_url_map[m_all_fdset.fd_array[i]];
-						job->http_client_=&http_client;
-						job->sock_=m_all_fdset.fd_array[i];
-						m_thread_pool->push_work(job);
-						FD_CLR(m_all_fdset.fd_array[i],&m_all_fdset);
-					}
-				}//for
+						if(FD_ISSET(fd_read.fd_array[i], &m_all_fdset))
+						{
+							Job* job=new Job;
+							job->execute_func_=worker_work;
+							job->url_ptr_=socket_url_map[fd_read.fd_array[i]];
+							job->http_client_=&http_client;
+							job->sock_=fd_read.fd_array[i];
+							m_thread_pool->push_work(job);
+							FD_CLR(fd_read.fd_array[i] , &m_all_fdset);
+						}
+						else
+						{
+							LLOG(L_ERROR, "fd_read is not in m_all_fdset");
+						}
+					}//for
+				}
 				break;
 			}//switch
 		}//if
@@ -176,7 +185,7 @@ int Spider_Executor::worker_work(void* param)
 		int status_code=job->http_client_->recv_response(job->sock_,&url_ptr->response, url_ptr->length);
 		if ( status_code==200 )
 		{
-			if ( url_ptr->belong!=NULL )
+			if ( url_ptr->belong!=NULL && url_ptr->length>0 )
 			{
 				((Spider_WebSite*)url_ptr->belong)->process(url_ptr);
 			}

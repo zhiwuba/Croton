@@ -33,9 +33,6 @@ static const  char*  KCookieFileName="spider.cookie";
 static const  char*  kDnsFileName="spider.dns";
 static const  char*  kHistoryFileName="spider.history";
 
-struct  
-{
-};
 
 typedef std::vector<std::pair<std::string,std::string>> StrPairVec;
 typedef std::vector<std::string> StrVec;

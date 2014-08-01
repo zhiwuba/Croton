@@ -38,7 +38,7 @@
 			<url>http://forgifs.com/gallery/d/.+/.+\.gif</url>
 		</pic>
 		<index>
-			<url comment="">http://forgifs.com/gallery/v/.+/.+\.gif\.html</url>
+			<url comment="&lt;div id=&quot;gsContent&quot;&gt;\s*&lt;div.+&gt;\s*&lt;table.+&gt;\s*&lt;tr&gt;\s*&lt;td&gt;.+&lt;p class=&quot;giDescription&quot;&gt;(.+)&lt;/p&gt;\s*&lt;/td&gt;">http://forgifs.com/gallery/v/.+/.+\.gif\.html</url>
 			<url>http://forgifs.com/gallery/v/.+/\?g2_page=\d{1,3}</url>
 		</index>
 	</seed>

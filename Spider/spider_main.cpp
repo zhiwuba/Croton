@@ -11,32 +11,6 @@
 using namespace std;
 using namespace boost::xpressive;
 
-int test_rinse()
-{
-	UrlPtrVec url_vec;
-
-	UrlPtr url_ptr1=create_url("http://www.cnblogs.com/tonykan/archive/2012/11/26/2788433.html",UT_HTML);
-	url_vec.push_back(url_ptr1);
-	UrlPtr url_ptr2=create_url("http://sxj007.blog.51cto.com/521729/121527",UT_HTML);
-	url_vec.push_back(url_ptr2);
-	UrlPtr url_ptr3=create_url("http://sxj007.blog.51cto.com/521729/d-3",UT_HTML);
-	url_vec.push_back(url_ptr3);
-	UrlPtr url_ptr4=create_url("http://bbs.csdn.net/topics/310181034",UT_HTML);
-	url_vec.push_back(url_ptr4);
-	UrlPtr url_ptr5=create_url("http://blog.51cto.com/zt/555",UT_HTML);
-	url_vec.push_back(url_ptr5);
-	UrlPtr url_ptr6=create_url("http://www.jspcn.net/forum/viewthread.php?tid=21",UT_HTML);
-	url_vec.push_back(url_ptr6);
-	UrlPtr url_ptr7=create_url("http://www.w3school.com.cn/sql/sql_insert.asp",UT_HTML);
-	url_vec.push_back(url_ptr7);
-	UrlPtr url_ptr8=create_url("http://blog.csdn.net/candyliuxj/article/details/7853938",UT_HTML);
-	url_vec.push_back(url_ptr8);
-
-
-	Spider_Executor::instance().initialize();
-	Spider_Url_Rinse::instance().rinse_urls(url_vec);
-	return 0;
-}
 
 int test_regex()
 {
@@ -103,7 +77,10 @@ int main()
 	
 	Spider_Config::instance().load();
 	Spider_Seed spider_seed;
-	spider_seed.load();
+	if( 0!=spider_seed.load() )
+	{
+		return -1;
+	}
 
 	Spider_Storage::instance().initialize();
 	Spider_Executor::instance().initialize();

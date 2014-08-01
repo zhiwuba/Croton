@@ -2,8 +2,9 @@
 #define __CROTON_WEBSITE_H__ 
 #include "spider_utils.h"
 #include "spider_url.h"
+#include "spider_seed.h"
 #include "boost/xpressive/xpressive_dynamic.hpp"
-
+using namespace boost::xpressive;
 
 
 //WebSite基类 保存基本信息

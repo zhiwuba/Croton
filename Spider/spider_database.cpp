@@ -86,15 +86,25 @@ int Spider_Database::insert_record(const char* website, const char* albums, UrlP
 	std::string thumb_path="thumb/";
 	thumb_path+=url_ptr->filename;
 
+	long len=strlen(url_ptr->comment);
+	char* es_comment=new char[2*len+1];
+	len=mysql_real_escape_string(&m_mysql, es_comment , url_ptr->comment, len);
+	if( len>1648 )
+	{
+		LLOG(L_ERROR, "comment is too long.");
+		return -1;
+	}
+
 	char command[2048];
 	sprintf(command, "INSERT INTO hd_paints (file_path,thumb_path,date_added,header,comment,source_url,source_website) VALUES ('%s' , '%s', NOW(), '%s', '%s', '%s', '%s')",
 		file_path.c_str(), 
 		thumb_path.c_str(), 
 		"", 
-		url_ptr->comment,
+		es_comment,
 		url_ptr->url,
 		website );
 
+	delete[] es_comment;
 	m_commands.push(std::string(command));
 	return 0;
 }
@@ -113,6 +123,7 @@ int Spider_Database::connect()
 		LLOG(L_ERROR,"mysql: connect server error!!");
 		return -1;
 	}
+	mysql_set_character_set(&m_mysql , "utf8");
 	return 0;
 }
 

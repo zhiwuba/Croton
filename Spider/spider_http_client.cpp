@@ -292,6 +292,7 @@ int Spider_Http_Client_Base::recv_package(int sock, Http_Response_Package& respo
 			if (count!=length)
 			{
 				LLOG(L_ERROR,"recv_package:recv_body_bylength error.");
+				return -1;
 			}
 			response.set_body(body, length);
 		}
@@ -388,7 +389,7 @@ int Spider_Http_Client_Base::recv_endwith_mark(int sock, char* buffer,const char
 			int last_error=lasterror;
 			if ( last_error>0&&last_error!=EWOULDBLOCK&&last_error!=EINPROGRESS )
 			{
-				printf("recv_endwith_mark error,code:%d. \n", last_error);
+				printf("recv_endwith_mark error,code : %d .\n", last_error);
 				break;
 			}
 		}
@@ -417,7 +418,7 @@ int Spider_Http_Client_Base::close_socket(int sock)
     if (sock<0) {
         return -1;
     }
-	shutdown(sock,SD_BOTH);
+	//shutdown(sock,SD_BOTH);
     closesocket(sock);
     sock=0;
     return 0;
@@ -483,7 +484,7 @@ int  Spider_Http_Client::send_request(UrlPtr url)
 	request_package.set_field("Accept","*/*");
 	request_package.set_field("User-Agent","Mozilla/5.0");
 	request_package.set_field("Host", std::string(url->domain));
-	request_package.set_field("Connection","Keep-Alive");
+	request_package.set_field("Connection","close");  //¶ÌÁ´½Ó
 	if ( strstr(url->domain,"renren")!=NULL )
 	{
 		Cookie* cookie=Spider_Cookie::instance().get_cookie("renren");

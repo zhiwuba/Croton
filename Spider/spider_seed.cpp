@@ -78,7 +78,7 @@ int Spider_Seed::load()
 			for ( pugi::xpath_node_set::const_iterator index_iter=index_urls.begin(); index_iter!=index_urls.end(); ++index_iter )
 			{
 				Seed::Index_Regex index_regex;
-				xml_attribute com_attr=index_iter->node().attribute("comment");
+				pugi::xml_attribute com_attr=index_iter->node().attribute("comment");
 				if( com_attr.empty() )
 				{
 					index_regex.has_comment=false;
