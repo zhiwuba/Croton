@@ -64,8 +64,8 @@ int Spider_Storage::write_file(const char* website, UrlPtr url_ptr )
 						fwrite(url_ptr->response,1,url_ptr->length, file);
 						fclose(file);
 					}
-					m_database->insert_record(website,NULL, url_ptr);
 				}
+				m_database->insert_record(website,NULL, url_ptr);
 			}
 		}
 	}

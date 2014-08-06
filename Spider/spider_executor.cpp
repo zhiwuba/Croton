@@ -88,6 +88,8 @@ int Spider_Executor::execute_loop()
 
 int Spider_Executor::main_thread_aid()
 {
+	int sock_count=0;
+	int close_count=0;
 #ifdef WIN32
 	Spider_Http_Client http_client;
 	std::map<int, UrlPtr> socket_url_map;
@@ -98,7 +100,7 @@ int Spider_Executor::main_thread_aid()
 		//FD_SET()  FD_CLR()  FD_ISSET()  FD_ZERO()
 		int maxfds=0;
 		
-		if ( m_all_fdset.fd_count< kMinSet)
+		if ( m_all_fdset.fd_count< kMinSet && m_thread_pool->get_queue_count()<10)
 		{
 			int count=0;
 			Recursive_Lock lock(m_queue_mutex);
@@ -110,6 +112,7 @@ int Spider_Executor::main_thread_aid()
 				int sock=http_client.send_request(url_ptr);
 				if ( sock>0 )
 				{
+					sock_count++;
 					FD_SET(sock,&m_all_fdset);
 					socket_url_map[sock]=url_ptr;
 				}//if
@@ -143,6 +146,7 @@ int Spider_Executor::main_thread_aid()
 							job->http_client_=&http_client;
 							job->sock_=fd_read.fd_array[i];
 							m_thread_pool->push_work(job);
+							close_count++;
 							FD_CLR(fd_read.fd_array[i] , &m_all_fdset);
 						}
 						else
@@ -155,6 +159,7 @@ int Spider_Executor::main_thread_aid()
 			}//switch
 		}//if
 		
+		LLOG(L_TRACE, "socket_count is %d, close_count is %d.", sock_count, close_count);
 		Sleep(500);
 	}//while
 
@@ -190,9 +195,16 @@ int Spider_Executor::worker_work(void* param)
 				((Spider_WebSite*)url_ptr->belong)->process(url_ptr);
 			}
 		}
-		else if (status_code==302)
+		else if (status_code==302 && url_ptr->response!=NULL && strncmp(url_ptr->response,"http://",7)==0 )
 		{
 			UrlPtr new_url_ptr=create_url(url_ptr->response, url_ptr->type);
+			new_url_ptr->belong=url_ptr->belong;
+			Spider_Executor::instance().put_url(new_url_ptr);
+		}
+		else if( status_code==-1 || url_ptr->response==NULL )
+		{
+			//ÖØÐÂÏÂÔØ
+			UrlPtr new_url_ptr=create_url(url_ptr->url, url_ptr->type);
 			new_url_ptr->belong=url_ptr->belong;
 			Spider_Executor::instance().put_url(new_url_ptr);
 		}

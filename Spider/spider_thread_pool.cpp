@@ -126,3 +126,8 @@ int Spider_Thread_Pool::get_worker_count()
 {
 	return m_worker_count;
 }
+
+int Spider_Thread_Pool::get_queue_count()
+{
+	return m_work_queue.size();
+}

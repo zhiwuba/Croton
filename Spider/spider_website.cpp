@@ -77,6 +77,7 @@ int Spider_Website_General::process(UrlPtr&  url_ptr)
 				{	//图片文件
 					UrlPtr new_url=create_url(url, UT_PICT);
 					new_url->belong=this;					
+					new_url->parent=strdup(url_ptr->url); // pic
 
 					for(int i=0 ; i<m_seed->index_regex_.size(); i++ ) //查看index url类型
 					{
@@ -167,7 +168,7 @@ int Spider_Website_Weibo::get_pic_from_index(UrlPtr& url)
 				{
 					std::string photo_url=info["pic_host"].asString()+"/mw690/"+info["pic_name"].asString();
 					const char* caption=info["caption_render"].asCString();
-					std::string ansi_cap=unicode_to_ansi(caption);
+					//std::string ansi_cap=unicode_to_ansi(caption);
 					
 					for ( int i=0 ;i <m_seed->pic_regex_.size(); i++ )
 					{
@@ -175,14 +176,14 @@ int Spider_Website_Weibo::get_pic_from_index(UrlPtr& url)
 						{   //符合规则的图片
 							UrlPtr new_url=create_url(photo_url, UT_PICT);
 							new_url->belong=this;
-							new_url->comment=strdup(""); //TODO:
+							new_url->comment=strdup(caption);
 							Spider_Url_Rinse::instance().rinse_url(new_url);
 							break;
 						}
 					}
 				}
 				else
-				{ //TODO: 为什么有null
+				{   //TODO: 为什么有null
 					LLOG(L_ERROR,"WeiboExplore::get_pic_from_index JsonValue is null.");
 				}
 			}

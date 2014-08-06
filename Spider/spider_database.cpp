@@ -96,12 +96,13 @@ int Spider_Database::insert_record(const char* website, const char* albums, UrlP
 	}
 
 	char command[2048];
-	sprintf(command, "INSERT INTO hd_paints (file_path,thumb_path,date_added,header,comment,source_url,source_website) VALUES ('%s' , '%s', NOW(), '%s', '%s', '%s', '%s')",
+	sprintf(command, "INSERT INTO hd_paints (file_path,thumb_path,date_added,header,comment,source_url,parent_url,source_website) VALUES ('%s' , '%s', NOW(), '%s', '%s', '%s', '%s' ,'%s')",
 		file_path.c_str(), 
 		thumb_path.c_str(), 
 		"", 
 		es_comment,
 		url_ptr->url,
+		url_ptr->parent,
 		website );
 
 	delete[] es_comment;

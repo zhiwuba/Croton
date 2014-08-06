@@ -209,11 +209,10 @@ int Spider_Http_Client_Base::connect_ip(const char *ip, int port)
     }
 	
 
-	linger m_sLinger;
-	m_sLinger.l_onoff = 1;	// (在closesocket()调用,但是还有数据没发送完毕的时候容许逗留)
-	m_sLinger.l_linger = 0;	// (容许逗留的时间为0秒)
-
-	setsockopt(sock,SOL_SOCKET,SO_LINGER, (const char*)&m_sLinger,sizeof(linger));
+	//linger m_sLinger;
+	//m_sLinger.l_onoff = 1;	// (在closesocket()调用,但是还有数据没发送完毕的时候容许逗留)
+	//m_sLinger.l_linger = 0;	// (容许逗留的时间为0秒)
+	//setsockopt(sock,SOL_SOCKET,SO_LINGER, (const char*)&m_sLinger,sizeof(linger));
 
 	//struct timeval tv;
 	//tv.tv_sec=20;
@@ -542,7 +541,9 @@ int Spider_Http_Client::recv_response(int sock , char** body, int& length  )
 	int ret=recv_package(sock, response_package);
 	if (ret!=0)
 	{
+		close_socket(sock);
 		LLOG2(L_ERROR,"recv occur an error. ");
+		return -1;
 	}
 	close_socket(sock); //一定要关闭socket幺....
 
@@ -552,6 +553,11 @@ int Spider_Http_Client::recv_response(int sock , char** body, int& length  )
 	if ( length>0 )
 	{
 		*body=(char*)malloc(length);
+		if( *body==NULL )
+		{
+			LLOG2(L_ERROR, "recv_response malloc error.");
+			return -1;
+		}
 		memcpy(*body,buffer,length);
 	}
 	return  status_code;

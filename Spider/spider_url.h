@@ -17,6 +17,7 @@ class URL
 public:
 	URL()
 	{
+		parent=NULL;
 		url=NULL;
 		domain=NULL;
 		res=NULL;
@@ -24,17 +25,21 @@ public:
 		response=NULL;
 		belong=NULL;
 		length=0;
+		comment=NULL;
 		albums_id=0;
 	}
 	~URL()
 	{
+		if (parent!=NULL)free(parent);
 		if (url!=NULL) free(url);
 		if (domain!=NULL)free(domain);
 		if (res!=NULL )free(res);
 		if (ip!=NULL)  free(ip);
 		if (response!=NULL)free(response);
+		if (comment!=NULL)free(comment);
 	}
-
+	
+	char*  parent;    //parent url for pic
 	char*  url;          //url 
 	char*  domain;  //domain
 	char*  res;         //Request Resource 

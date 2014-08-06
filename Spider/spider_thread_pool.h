@@ -22,6 +22,7 @@ public:
 	void  push_work(void* param);
 
 	int    get_worker_count(); /*获取正在运行的线程数量*/
+	int    get_queue_count(); /*获取队列中任务的数量*/
 
 private:
 	static unsigned int manage_function(void*);

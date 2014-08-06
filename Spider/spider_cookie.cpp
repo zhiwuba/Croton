@@ -104,9 +104,10 @@ int Spider_Cookie::login()
 	int nret=0;
 	if ( load_cookie()!=0 )
 	{
-		int ret1=Spider_Cookie::instance().login_renren(
+		int ret1= 0;
+			/*Spider_Cookie::instance().login_renren(
 			Spider_Config::instance().tokens_["renren"]->account,
-			Spider_Config::instance().tokens_["renren"]->password);
+			Spider_Config::instance().tokens_["renren"]->password); */
 		
 		int ret2=Spider_Cookie::instance().login_weibo(
 			Spider_Config::instance().tokens_["weibo"]->account,
@@ -653,8 +654,8 @@ int Spider_Cookie::sina_dologin(std::string& en_acount ,std::string& en_password
 	ret=response_package.get_body(body);
 	std::string recv_data;
 	recv_data.assign(body, ret);
-	int start_pos=recv_data.find("location.replace(\"");
-	int end_pos=recv_data.find("\"",start_pos+18);
+	int start_pos=recv_data.find("location.replace('");
+	int end_pos=recv_data.find("'",start_pos+18);
 	
 	if ( start_pos>=end_pos )
 	{

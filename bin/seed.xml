@@ -1,17 +1,16 @@
 <seeds>
-	<!--seed name="weibo" pic_size="300-20240" author="1" >
+	<seed name="weibo" pic_size="300-20240" author="1" >
 		<start>
 			<url>http://photo.weibo.com/albums/get_all?uid=1850235592&page=1&count=20</url>
-			<url></url>
+			<url>http://photo.weibo.com/albums/get_all?uid=1895964183&page=1&count=20</url>
 		</start>
 		<pic>
-			<url>http://ww4.sinaimg.cn/mw690/6e485ac8jw1eilecqwgdxj20dw0ijtaw.jpg</url>
-			<url>http://ww4.sinaimg.cn/mw690/6aaeb4b8gw1eih273ms6ag205605yx6l.gif</url>
+			<url>http://ww\d\.sinaimg\.cn/mw690/.+\.gif</url>
 		</pic>
 		<index>
-			<url>http://photo.weibo.com/photos/get_all?uid=%s&album_id=%s&count=%d&page=%d&type=%d</url>
+			<url>http://photo\.weibo\.com/photos/get_all\?uid=\d+&album_id=\d+&count=\d+&page=\d+&type=\d+</url>
 		</index>
-	</seed-->
+	</seed>
 	
 	<!--seed name="renren" pic_size="300-20240" author="1">
 		<start>
@@ -25,7 +24,7 @@
 		</index>
 	</seed-->
 	
-	<seed name="forgifs" pic_size="300-20240" author="1">
+	<!--seed name="forgifs" pic_size="300-20240" author="1">
 		<start>
 			<url>http://forgifs.com/gallery/v/Funny/</url>
 			<url>http://forgifs.com/gallery/v/Dogs/</url>
@@ -41,26 +40,26 @@
 			<url comment="&lt;div id=&quot;gsContent&quot;&gt;\s*&lt;div.+&gt;\s*&lt;table.+&gt;\s*&lt;tr&gt;\s*&lt;td&gt;.+&lt;p class=&quot;giDescription&quot;&gt;(.+)&lt;/p&gt;\s*&lt;/td&gt;">http://forgifs.com/gallery/v/.+/.+\.gif\.html</url>
 			<url>http://forgifs.com/gallery/v/.+/\?g2_page=\d{1,3}</url>
 		</index>
-	</seed>
+	</seed-->
 	
 	<!--seed name="gifbin" pic_size="300-20240" author="1" >
 		<start>
 			<url>http://www.gifbin.com/</url>
 		</start>
 		<pic>
-			<url>http://gifs.gifbin.com/(.)+.gif</url>
+			<url>http://gifshost\.com/\d+/\d+_.+\.gif</url>
 		</pic>
 		<index>
-			<url>http://www.gifbin.com/\d+</url>
+			<url comment="&lt;div id=&quot;main&quot;\s*&gt;\s*.+&lt;div class=&quot;box boxpadding&quot;&gt;.+&lt;h1&gt;(.+)&lt;/h1&gt;">http://www.gifbin.com/\d+</url>
 		</index>
-	</seed>
+	</seed-->
 	
-	<seed name="gifak" pic_size="300-20240">
+	<!--seed name="gifak" pic_size="300-20240">
 		<start>
 			<url>http://gifak-net.tumblr.com/</url>
 		</start>
 		<pic>
-			<url>http://\d+.media.tumblr.com/(.)+/(.)+.gif</url>
+			<url>http://\d+\.media\.tumblr\.com/.+/.+\.gif</url>
 		</pic>
 		<index>
 			<url>http://gifak-net.tumblr.com/page/\d+</url>

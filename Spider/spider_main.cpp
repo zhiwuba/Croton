@@ -4,67 +4,9 @@
 #include "spider_website.h"
 #include "spider_executor.h"
 #include "spider_storage.h"
-#include "spider_database.h"
 #include "spider_url_rinse.h"
-#include "spider_http_client.h"
+#include "spider_cookie.h"
 
-using namespace std;
-using namespace boost::xpressive;
-
-
-int test_regex()
-{
-	boost::xpressive::cregex  reg=boost::xpressive::cregex::compile("http://forgifs.com/gallery/main.php\\?g2_page=\\d{1,3}");
-	bool bret=regex_match("http://forgifs.com/gallery/main.php?g2_page=6", reg);
-	return 0;
-}
-
-
-void  test_regex2()
-{
-	char buffer[1023];
-	//cregex my_regex=cregex::compile("^<div class=\"ugc-detail-container\">(.)+<p class=\"share-summary\">(.)+</p></div>$");
-	cregex my_regex=cregex::compile("^<div class=\"ugc-detail-container\">(.)+</div>$");
-	//cregex my_regex=cregex::compile("^<p class=\"share-summary\">(.)+</p>$");
-
-	cmatch what;
-	if( regex_search(buffer, what, my_regex) )
-	{
-		int size=what.size();
-		for ( int i=0; i< what.size(); i++ )
-		{
-			cout<<what[i]<<endl;
-			printf("\n\n\n\n");
-		}
-	}
-	else
-	{
-		printf("not found . \n");
-	}
-}
-
-int test_httpclientbase()
-{
-	UrlPtr url_ptr=create_url("http://forgifs.com/gallery/d/214974-1/Walks-off-motorcycle-accident.gif",UT_PICT);
-	url_ptr->ip=strdup("108.162.201.43");
-	Spider_Http_Client http_client;
-
-	while(true)
-	{
-		printf("======================\n");
-		int sock=http_client.send_request(url_ptr);
-		char* body=NULL;
-		int length=0;
-		http_client.recv_response(sock,&body,length );
-		if ( body!=NULL )
-		{
-			delete[] body;
-		}
-		printf("=======over=====\n");
-		Sleep(2000);
-	}
-	return 0;
-};
 
 int main()
 {
@@ -81,12 +23,13 @@ int main()
 	{
 		return -1;
 	}
-
+	
+	Spider_Cookie::instance().login();
 	Spider_Storage::instance().initialize();
 	Spider_Executor::instance().initialize();
 	Spider_Url_Rinse::instance().initialize();
 
-	while(true)	
+	while(true)
 	{
 		Seed* seed=NULL;
 		std::string site_name;
