@@ -100,7 +100,7 @@ int Spider_Executor::main_thread_aid()
 		//FD_SET()  FD_CLR()  FD_ISSET()  FD_ZERO()
 		int maxfds=0;
 		
-		if ( m_all_fdset.fd_count< kMinSet && m_thread_pool->get_queue_count()<10)
+		if ( m_all_fdset.fd_count< kMinSet && m_thread_pool->get_queue_count()<4)
 		{
 			int count=0;
 			Recursive_Lock lock(m_queue_mutex);

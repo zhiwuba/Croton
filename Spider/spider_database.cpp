@@ -81,11 +81,6 @@ int Spider_Database::insert_record(const char* website, const char* albums, UrlP
 {
 	Recursive_Lock lock(m_queue_mutex);
 
-	std::string file_path="original/";
-	file_path+=url_ptr->filename;
-	std::string thumb_path="thumb/";
-	thumb_path+=url_ptr->filename;
-
 	long len=strlen(url_ptr->comment);
 	char* es_comment=new char[2*len+1];
 	len=mysql_real_escape_string(&m_mysql, es_comment , url_ptr->comment, len);
@@ -96,9 +91,8 @@ int Spider_Database::insert_record(const char* website, const char* albums, UrlP
 	}
 
 	char command[2048];
-	sprintf(command, "INSERT INTO hd_paints (file_path,thumb_path,date_added,header,comment,source_url,parent_url,source_website) VALUES ('%s' , '%s', NOW(), '%s', '%s', '%s', '%s' ,'%s')",
-		file_path.c_str(), 
-		thumb_path.c_str(), 
+	sprintf(command, "INSERT INTO hd_paints (file_name,date_added,header,comment,source_url,parent_url,source_website) VALUES ('%s', NOW(), '%s', '%s', '%s', '%s' ,'%s')",
+		url_ptr->filename, 
 		"", 
 		es_comment,
 		url_ptr->url,

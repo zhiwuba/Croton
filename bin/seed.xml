@@ -1,8 +1,12 @@
 <seeds>
 	<seed name="weibo" pic_size="300-20240" author="1" >
 		<start>
-			<url>http://photo.weibo.com/albums/get_all?uid=1850235592&page=1&count=20</url>
-			<url>http://photo.weibo.com/albums/get_all?uid=1895964183&page=1&count=20</url>
+			<!--url>http://photo.weibo.com/albums/get_all?uid=1850235592&page=1&count=20</url>
+			<url>http://photo.weibo.com/albums/get_all?uid=1895964183&page=1&count=20</url-->
+			<url>http://photo.weibo.com/albums/get_all?uid=2307091253&page=1&count=20 </url> <!-- GIF搞笑专属-->
+			<!--url>http://photo.weibo.com/albums/get_all?uid=2936059657&page=1&count=20 </url--> <!--GIF 博士 -->
+			<url>http://photo.weibo.com/albums/get_all?uid=1731230547&page=1&count=20 </url> <!---超搞笑GIF图 -->
+			<url>http://photo.weibo.com/albums/get_all?uid=1764856032&page=1&count=20 </url> <!---笑话趣图大百科 -->
 		</start>
 		<pic>
 			<url>http://ww\d\.sinaimg\.cn/mw690/.+\.gif</url>
